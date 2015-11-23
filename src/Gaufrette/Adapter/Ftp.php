@@ -217,6 +217,22 @@ class Ftp implements Adapter,
         return $this->isDir($this->computePath($key));
     }
 
+    public function listDirectoryRecursive($directory = '')
+    {
+        $result = $this->listDirectory($directory);
+        $response[$directory]['dirs'] = $result['dirs'];
+        $response[$directory]['keys'] = $result['keys'];
+
+        $dirs = $result['dirs'];
+        foreach($dirs as $dir) {
+            $response[$directory]['subdirs'] = $this->listDirectoryRecursive($dir);
+
+        }
+
+        return $response;
+    }
+
+
     /**
      * Lists files from the specified directory. If a pattern is
      * specified, it only returns files matching it.
